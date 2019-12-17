@@ -1,0 +1,29 @@
+{
+  "name": "windowsegments-polyfill",
+  "version": "1.0.0",
+  "description": "",
+  "source": "src/index.js",
+  "main": "dist/window-segments-polyfill.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "build": "microbundle -f iife",
+    "dev": "concurrently serve \"microbundle watch -f iife\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zouhir/windowsegments-polyfill.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zouhir/windowsegments-polyfill/issues"
+  },
+  "homepage": "https://github.com/zouhir/windowsegments-polyfill#readme",
+  "devDependencies": {
+    "concurrently": "^5.0.1",
+    "microbundle": "^0.11.0",
+    "serve": "^11.2.0"
+  }
+}
