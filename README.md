@@ -75,7 +75,7 @@ to be notified whenever the `'spanning'` media query feature or the environment 
 
 Documentation
 ===
-Located [here](https://foldable-devices.github.io/windowsegments-polyfill/global.html).
+Located [here](https://foldable-devices.github.io/windowsegments-polyfill/docs/global.html).
 
 Test suite
 ===
