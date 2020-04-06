@@ -11,7 +11,7 @@ async function invalidate() {
 
 /**
  * Returns a function that won't call `fn` if it was invoked at a
- * faster interval than `wait`
+ * faster interval than `wait`.
  *
  * @param {Function} fn
  * @param {Number} wait - milliseconds
@@ -31,7 +31,7 @@ export function debounce(fn, wait) {
  * @property {number} foldSize - The width of the visible fold (hinge) between the two screens, in CSS pixels.
  * @property {number} browserShellSize - The height of the user agent (browser) top chrome, in CSS pixels.
  * @property {string} spanning - The spanning mode: "single-fold-horizontal", "single-fold-vertical" or "none".
- * @property {EventHandler} onchange
+ * @property {EventHandler} onchange - An event handler for the "change" event.
  */
 export class FoldablesFeature {
   constructor() {
@@ -92,6 +92,10 @@ export class FoldablesFeature {
     invalidate();
   }
 
+  /**
+   * Returns an array of screen and fold segments, in order, each segment is
+   * an object containing width, height, top and left properties.
+   */
   getSegments() {
     if (this.spanning === "none") {
       return [
@@ -122,6 +126,11 @@ export class FoldablesFeature {
 }
 
 window[ns] = new FoldablesFeature;
+
+/**
+ * Returns an array of screen segments, each segment is an object containing
+ * width, height, top and left properties (AKA segment's bounding rects).
+ */
 window.getWindowSegments = function() {
   const segments = window[ns].getSegments();
   return [segments[0], segments[2]];
