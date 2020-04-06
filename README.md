@@ -23,24 +23,24 @@ console.log(screenSegments.length) // 2 in the example above
 How to use the polyfill
 ===
 
-This polyfill is packaged as a JavaScript module. It is available on NPM over [here](https://www.npmjs.com/package/window-segments-polyfill).
+This polyfill is packaged as a JavaScript module. It is available on NPM over [here](https://www.npmjs.com/package/windowsegments-polyfill).
 
 To install the polyfill just run:
 
 ```bash
-npm install --save window-segments-polyfill
+npm install --save windowsegments-polyfill
 ```
 
 Then you can include it in your project:
 
 ```html
-<script type="module" src="/path/to/modules/window-segments-polyfill.js"></script>
+<script type="module" src="/path/to/modules/windowsegments-polyfill.js"></script>
 ```
 
 or in your JavaScript source file
 
 ```js
-import "/path/to/modules/window-segments-polyfill/window-segments-polyfill.js";
+import "/path/to/modules/windowsegments-polyfill/windowsegments-polyfill.js";
 ```
 
 That's it. See the `demo/basic` directory for examples.
