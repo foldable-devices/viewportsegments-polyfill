@@ -4,37 +4,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+  <title>Window Segments</title>
   <style>
     body { padding: 0; margin: 0;}
   </style>
 </head>
 <body>
+  <div id="app">
+    <div></div>
+    <div></div>
+  </div>
 
-  <div id="app"><div>
-  
-  <script src="../../dist/window-segments-polyfill.js"></script>
-  <script>
-    
-    app.innerHTML = '';
+  <script type=module>
+    import { FoldablesFeature } from "../../src/utils/windowsegments-polyfill.js";
 
-    function createLayoutSegments () {
-      window.getWindowSegments().forEach(segment => {
-        let element = document.createElement('div');
-        element.style.background = "#" + Math.floor(Math.random()*16777215).toString(16);
+    const colors = ["blue", "green"];
+
+    function createLayoutSegments() {
+      const segments = getWindowSegments();
+
+      for (let [i, segment] of segments.entries()) {
+        const element = app.children[i];
+        element.style.display = "block";
+        element.style.background = colors[i];
         element.style.position = 'absolute'
         element.style.top = segment.top + 'px';
         element.style.left = segment.left + 'px';
         element.style.width = segment.width  + 'px';
         element.style.height = segment.height  + 'px';
-        app.appendChild(element);
-      });
+      }
+
+      if (segments.length == 1) {
+        app.children[1].style.display = "none";
+      }
     }
 
-
+    const foldablesFeat = new FoldablesFeature;
+    foldablesFeat.onchange = createLayoutSegments;
     createLayoutSegments();
-
-
   </script>
 </body>
 </html>
