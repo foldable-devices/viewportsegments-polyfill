@@ -37,20 +37,28 @@ In order to change the display configuration, you can use the polyfill together 
 
 #### Manually changing the display configuration
 
-The configuration object is available as
+You can update values such as `spanning`, `foldSize` and `browserShellSize` by importing the `FoldablesFeature` object. You can also subscribe to the 'change' event
+to be notified whenever the `'spanning'` media query feature or the environment variables change. That can happen due to window resizes or because the configuration values were changed programmatically.
 
 ```js
-  const config = window["__foldables_env_vars__"];
-```
+  import { FoldablesFeature } from 'windowsegments-polyfill/windowsegments-polyfill.js';
 
-You can update values such as `spanning`, `foldSize` and `browserShellSize` by calling the `update` method:
+  const foldablesFeat = new FoldablesFeature;
 
-```js
-  config.update({
-    spanning: "single-fold-horizontal",
-    foldSize: 30,
-    browserShellSize: 20
-  });
+  // Add an event listener.
+  foldablesFeat.onchange = () => console.log("change");
+
+    // Add as many event listeners as you want.
+  foldablesFeat.addEventListener('change', () => console.log("change"));
+
+  // Change a single value; results in one update (one 'change' event firing).
+  foldablesFeat.foldSize = 20;
+
+  // Change multiple values by assignment; results in one update.
+  Object.assign(foldablesFeat, { foldSize: 50, spanning: "none"});
+
+  // Change multiple values in one scope; results in one update
+  (function() { foldablesFeat.foldSize = 100; foldablesFeat = "single-fold-horizontal" })();
 ```
 
 Test suite

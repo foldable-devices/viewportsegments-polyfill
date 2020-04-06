@@ -1,124 +1,128 @@
-const POLYFILL_NAMESPACE = "__foldables_env_vars__";
-const SPANNING_MF_VAL_HOR = "single-fold-horizontal";
-const SPANNING_MF_VAL_VER = "single-fold-vertical";
-const SPANNING_MF_VAL_NONE = "none";
+const ns = "__foldables__";
 
-if (typeof window[POLYFILL_NAMESPACE] === "undefined") {
-  // polyfill configuration related variables
-  let spanning =
-    sessionStorage.getItem(`${POLYFILL_NAMESPACE}-spanning`) ||
-    SPANNING_MF_VAL_NONE;
-  let foldSize = sessionStorage.getItem(`${POLYFILL_NAMESPACE}-foldSize`) || 0;
-  let browserShellSize =
-    sessionStorage.getItem(`${POLYFILL_NAMESPACE}-browserShellSize`) || 0;
-  // global configs, accessible via the window object
-  Object.defineProperty(window, POLYFILL_NAMESPACE, {
-    value: {
-      spanning,
-      foldSize,
-      browserShellSize,
-      update,
-      onupdate: [onDeviceSettingsUpdated]
-    }
-  });
-
-  // web-based emulator runs this polyfill in an iframe, we need to communicate
-  // emulator state changes to the site
-  // should only be registered once (in CSS or JS polyfill not both)
-  window.addEventListener("message", evt => {
-    let action = evt.data.action || "";
-    let value = evt.data.value || {};
-    if (action === "update") {
-      window[POLYFILL_NAMESPACE].update(value);
-    }
-  });
-} else {
-  window[POLYFILL_NAMESPACE].onupdate.push(onDeviceSettingsUpdated);
+let needsDispatch = false;
+async function invalidate() {
+  if (!needsDispatch) {
+    needsDispatch = true;
+    needsDispatch = await Promise.resolve(false);
+    window[ns].dispatchEvent(new Event('change'));
+  }
 }
 
-function getWindowSegments() {
-  let segments = [];
-  let viewportWidth = window.innerWidth;
-  let viewporHeight = window.innerHeight;
+/**
+ * Returns a function that won't call `fn` if it was invoked at a
+ * faster interval than `wait`
+ *
+ * @param {Function} fn
+ * @param {Number} wait - milliseconds
+ */
+export function debounce(fn, wait) {
+  let timeout;
+  return function() {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn.apply(this, arguments), wait);
+  };
+}
 
-  let { foldSize, browserShellSize, spanning } = window[POLYFILL_NAMESPACE];
+/**
+ *
+ * @typedef FoldablesFeature
+ * @type {object}
+ * @property {number} foldSize - The width of the visible fold (hinge) between the two screens, in CSS pixels.
+ * @property {number} browserShellSize - The height of the user agent (browser) top chrome, in CSS pixels.
+ * @property {string} spanning - The spanning mode: "single-fold-horizontal", "single-fold-vertical" or "none".
+ * @property {EventHandler} onchange
+ */
+export class FoldablesFeature {
+  constructor() {
+    if (window[ns] !== undefined) {
+      return window[ns];
+    }
 
-  // those are numbers not strings as stored in sessionStorage
-  foldSize = +foldSize;
-  browserShellSize = +browserShellSize;
+    const eventTarget = document.createDocumentFragment();
+    this.addEventListener = eventTarget['addEventListener'].bind(eventTarget);
+    this.removeEventListener = eventTarget['removeEventListener'].bind(eventTarget);
+    this.dispatchEvent = event => {
+      if (event.type !== "change") {
+        return;
+      }
+      const methodName = `on${event.type}`;
+      if (typeof this[methodName] == 'function') {
+        this[methodName](event);
+      }
+      return eventTarget.dispatchEvent(event);
+    }
 
-  if (spanning === SPANNING_MF_VAL_NONE) {
-    segments.push({
-      left: 0,
-      top: 0,
-      width: viewportWidth,
-      height: viewporHeight
+    // Web-based emulator runs this polyfill in an iframe, we need to
+    // communicate emulator state changes to the site.
+    // Should only be registered once (in CSS or JS polyfill, not both).
+    window.addEventListener("message", ev => {
+      if (ev.data.action === "update") {
+        Object.assign(this, ev.data.value);
+      }
     });
+
+    window.addEventListener("resize", () => debounce(invalidate(), 200));
   }
 
-  if (spanning === SPANNING_MF_VAL_VER) {
-    let foldLeft = viewportWidth / 2 - foldSize / 2;
-    segments.push(
-      {
-        top: 0,
-        left: 0,
-        width: foldLeft,
-        height: viewporHeight
-      },
-      {
-        left: foldLeft + foldSize,
-        top: 0,
-        width: viewportWidth - (foldLeft + foldSize),
-        height: viewporHeight
-      }
-    );
-  }
-
-  if (spanning === SPANNING_MF_VAL_HOR) {
-    let foldTop = window.innerHeight / 2 - foldSize / 2 - browserShellSize;
-    segments.push(
-      {
-        top: 0,
-        left: 0,
-        width: viewportWidth,
-        height: foldTop
-      },
-      {
-        left: 0,
-        top: foldTop + foldSize,
-        width: viewportWidth,
-        height: viewporHeight - foldTop + foldSize
-      }
-    );
-  }
-  return segments;
-}
-
-if (typeof window.getWindowSegments === "undefined") {
-  Object.defineProperty(window, "getWindowSegments", {
-    value: getWindowSegments
-  });
-}
-
-function onDeviceSettingsUpdated() {
-  console.warn("device settings updated, resize the window");
-}
-
-const VALID_CONFIG_PROPS = new Set([
-  "foldSize",
-  "browserShellSize",
-  "spanning"
-]);
-
-function update(newConfings) {
-  Object.keys(newConfings).forEach(k => {
-    if (VALID_CONFIG_PROPS.has(k)) {
-      window[POLYFILL_NAMESPACE][k] = newConfings[k];
-      sessionStorage.setItem(
-        `${POLYFILL_NAMESPACE}-${k}`,
-        window[POLYFILL_NAMESPACE][k]
-      );
+  get spanning() { return sessionStorage.getItem(`${ns}-spanning`) || "none" }
+  set spanning(v) {
+    if (!["none", "single-fold-horizontal", "single-fold-vertical"].includes(v)) {
+      throw new TypeError(v);
     }
-  });
-  window[POLYFILL_NAMESPACE].onupdate.forEach(fn => fn());
+    sessionStorage.setItem(`${ns}-spanning`, v);
+    invalidate();
+  }
+
+  get foldSize() { return +sessionStorage.getItem(`${ns}-fold-size`) || 0 }
+  set foldSize(v) {
+    if (!(Number(v) >= 0)) {
+      throw new TypeError(v);
+    }
+    sessionStorage.setItem(`${ns}-fold-size`, v);
+    invalidate();
+  }
+
+  get browserShellSize() { return +sessionStorage.getItem(`${ns}-browser-shell-size`) || 0 }
+  set browserShellSize(v) {
+    if (!(Number(v) >= 0)) {
+      throw new TypeError(v);
+    }
+    sessionStorage.setItem(`${ns}-browser-shell-size`, v);
+    invalidate();
+  }
+
+  getSegments() {
+    if (this.spanning === "none") {
+      return [
+        { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight },
+      ];
+    }
+
+    if (this.spanning === "single-fold-horizontal") {
+      const screenCenter = (window.innerHeight - this.browserShellSize) / 2;
+      const width = window.innerWidth;
+      return [
+        { top: 0, left: 0, width, height: screenCenter - this.foldSize / 2 },
+        { top: screenCenter - this.foldSize / 2, height: this.foldSize, left: 0, width },
+        { top: screenCenter + this.foldSize / 2, left: 0, width, height: window.innerHeight }
+      ];
+    }
+
+    if (this.spanning === "single-fold-vertical") {
+      const width = window.innerWidth / 2 - this.foldSize / 2;
+      const height = window.innerHeight;
+      return [
+        { top: 0, left: 0, width, height},
+        { top: 0, height, left: width, width: this.foldSize },
+        { top: 0, left: window.innerWidth / 2 + this.foldSize / 2, width, height }
+      ];
+    }
+  }
 }
+
+window[ns] = new FoldablesFeature;
+window.getWindowSegments = function() {
+  const segments = window[ns].getSegments();
+  return [segments[0], segments[2]];
+};
