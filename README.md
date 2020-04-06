@@ -9,7 +9,7 @@ Web developers targeting foldable devices want to be able to effectively lay out
 
 The `getWindowSegments` window method will return an array of screen segments, each segment is an object containing `width`, `height`, `top` and `left` properties (aka segment's bounding rects)
 
-![Figure showing a foldable devices with 2 screens](https://raw.githubusercontent.com/foldable-devices/windowsegments-polyfill/master/images/screen.png)
+![Figure showing a foldable devices with 2 screens](https://raw.githubusercontent.com/foldable-devices/windowsegments-polyfill/master/images/screens.png)
 
 #### Example Usage
 
