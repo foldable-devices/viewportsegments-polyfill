@@ -9,11 +9,11 @@ Web developers targeting foldable devices want to be able to effectively lay out
 
 The `getWindowSegments` window method will return an array of screen segments, each segment is an object containing `width`, `height`, `top` and `left` properties (aka segment's bounding rects)
 
-![Figure showing a foldable devices with 2 screens](.github/screens.png)
+![Figure showing a foldable devices with 2 screens](https://raw.githubusercontent.com/foldable-devices/windowsegments-polyfill/master/images/screen.png)
 
 #### Example Usage
 
-```
+```js
 const screenSegments = window.getWindowSegments();
 
 console.log(screenSegments.length) // 2 in the example above
@@ -23,15 +23,27 @@ console.log(screenSegments.length) // 2 in the example above
 How to use the polyfill
 ===
 
-Add the polyfill to your project
+This polyfill is packaged as a JavaScript module. It is available on NPM over [here](https://www.npmjs.com/package/window-segments-polyfill).
 
-```html
-<script src="window-segments-polyfill.js"></script>
+To install the polyfill just run:
+
+```bash
+npm install --save window-segments-polyfill
 ```
 
-and start using the new CSS features.
+Then you can include it in your project:
 
-- That's it. See the `examples/basic` directory for examples.
+```html
+<script type="module" src="/path/to/modules/window-segments-polyfill.js"></script>
+```
+
+or in your JavaScript source file
+
+```js
+import "/path/to/modules/window-segments-polyfill/window-segments-polyfill.js";
+```
+
+That's it. See the `demo/basic` directory for examples.
 
 In order to change the display configuration, you can use the polyfill together with an emulator or you can change the settings manually. The settings are stored across sessions.
 
@@ -61,6 +73,10 @@ to be notified whenever the `'spanning'` media query feature or the environment 
   (function() { foldablesFeat.foldSize = 100; foldablesFeat = "single-fold-horizontal" })();
 ```
 
+Documentation
+===
+Located [here](https://foldable-devices.github.io/windowsegments-polyfill/global.html).
+
 Test suite
 ===
 
@@ -69,10 +85,10 @@ There are unfortunately no [web-platform-tests](https://github.com/w3c/web-platf
 Known issues
 ===
 
-Check GitHub.
+Check GitHub [here](https://github.com/foldable-devices/windowsegments-polyfill/issues).
 
 Learn more
 ===
 
 - [Explainer](https://github.com/MicrosoftEdge/MSEdgeExplainers/blob/master/Foldables/explainer.md) - a document explaining how this feature was designed and how it fits together with other APIs.
-- [CSS Spanning Media Feature Polyfill](https://github.com/zouhir/spanning-css-polyfill)
+- [CSS Spanning Media Feature Polyfill](https://github.com/foldable-devices/spanning-css-polyfill)

@@ -1,15 +1,23 @@
 {
   "name": "windowsegments-polyfill",
   "version": "1.0.0",
-  "description": "",
-  "source": "src/index.js",
-  "main": "dist/window-segments-polyfill.js",
+  "description": "Polyfill for JavaScript Window Segments",
+  "module": "build/windowsegments-polyfill.js",
+  "main": "build/windowsegments-polyfill.js",
+  "type": "module",
   "directories": {
     "example": "examples"
   },
+  "files": [
+    "!/demo/",
+    "!/images/",
+    "!/src/",
+    "!/docs/"
+  ],
   "scripts": {
-    "build": "microbundle -f iife",
-    "dev": "concurrently serve \"microbundle watch -f iife\""
+    "build": "microbundle -f es -o build",
+    "dev": "concurrently serve \"microbundle watch -f es\"",
+    "generate-docs": "jsdoc -d docs/ src/index.js README.md"
   },
   "repository": {
     "type": "git",
@@ -18,12 +26,13 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/zouhir/windowsegments-polyfill/issues"
+    "url": "https://github.com/foldable-devices/windowsegments-polyfill/issues"
   },
-  "homepage": "https://github.com/zouhir/windowsegments-polyfill#readme",
+  "homepage": "https://github.com/foldable-devices/windowsegments-polyfill#readme",
   "devDependencies": {
-    "concurrently": "^5.0.1",
+    "concurrently": "^5.1.0",
     "microbundle": "^0.11.0",
-    "serve": "^11.2.0"
+    "serve": "^11.3.0",
+    "jsdoc": "^3.6.3"
   }
 }
