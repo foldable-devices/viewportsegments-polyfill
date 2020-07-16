@@ -100,13 +100,14 @@ export class FoldablesFeature {
       ];
     }
 
+    // The fold is defined as a segment here because it's used in the css spaning polyfill.
     if (this.spanning === "single-fold-horizontal") {
       const screenCenter = (window.innerHeight - this.browserShellSize) / 2;
       const width = window.innerWidth;
       return [
         { top: 0, left: 0, width, height: screenCenter - this.foldSize / 2 },
         { top: screenCenter - this.foldSize / 2, height: this.foldSize, left: 0, width },
-        { top: screenCenter + this.foldSize / 2, left: 0, width, height: window.innerHeight }
+        { top: screenCenter + this.foldSize / 2, left: 0, width, height: screenCenter - this.foldSize / 2 }
       ];
     }
 
@@ -132,5 +133,8 @@ window[ns] = new FoldablesFeature;
  */
 window.getWindowSegments = function() {
   const segments = window[ns].getSegments();
-  return [segments[0], segments[2]];
+  if (segments.length === 1)
+    return segments;
+  else
+    return [segments[0], segments[2]];
 };

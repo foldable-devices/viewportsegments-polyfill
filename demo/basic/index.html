@@ -7,16 +7,18 @@
   <title>Window Segments</title>
   <style>
     body { padding: 0; margin: 0;}
+    button { position: absolute; top: 0; left: 0; z-index: 999}
   </style>
 </head>
 <body>
+  <button type="button">Change spanning state</button>
   <div id="app">
     <div></div>
     <div></div>
   </div>
 
   <script type=module>
-    import { FoldablesFeature } from "../../src/utils/windowsegments-polyfill.js";
+    import { FoldablesFeature } from "../../src/index.js";
 
     const colors = ["blue", "green"];
 
@@ -41,7 +43,14 @@
 
     const foldablesFeat = new FoldablesFeature;
     foldablesFeat.onchange = createLayoutSegments;
+    foldablesFeat.foldSize = '24';
     createLayoutSegments();
+
+    document.querySelector('button').addEventListener('click', _ => {
+        const spanningMode = ['single-fold-horizontal', 'single-fold-vertical', 'none'];
+        foldablesFeat.spanning = spanningMode[Math.floor(Math.random() * 3)];
+      }
+    );
   </script>
 </body>
 </html>
