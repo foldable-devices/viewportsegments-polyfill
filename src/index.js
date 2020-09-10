@@ -131,10 +131,12 @@ window[ns] = new FoldablesFeature;
  * @description Returns an array of screen segments, each segment is an object containing
  * width, height, top and left properties (AKA segment's bounding rects).
  */
-window.getWindowSegments = function() {
-  const segments = window[ns].getSegments();
-  if (segments.length === 1)
-    return segments;
-  else
-    return [segments[0], segments[2]];
-};
+if (window.getWindowSegments === undefined) {
+  window.getWindowSegments = function() {
+    const segments = window[ns].getSegments();
+    if (segments.length === 1)
+      return segments;
+    else
+      return [segments[0], segments[2]];
+  };
+}
