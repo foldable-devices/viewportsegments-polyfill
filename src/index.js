@@ -30,7 +30,7 @@ export function debounce(fn, wait) {
  * @type {object}
  * @property {number} foldSize - The width of the visible fold (hinge) between the two screens, in CSS pixels.
  * @property {number} browserShellSize - The height of the user agent (browser) top chrome, in CSS pixels.
- * @property {string} spanning - The spanning mode: "single-fold-horizontal", "single-fold-vertical" or "none".
+ * @property {string} screenSpanning - The spanning mode: "single-fold-horizontal", "single-fold-vertical" or "none".
  * @property {object} segments - Returns an array of screen and fold segments, in order, each segment is an object containing width, height, top and left properties.
  * @property {EventHandler} onchange - An event handler for the "change" event.
  */
@@ -66,8 +66,8 @@ export class FoldablesFeature {
     window.addEventListener("resize", () => debounce(invalidate(), 200));
   }
 
-  get spanning() { return sessionStorage.getItem(`${ns}-spanning`) || "none" }
-  set spanning(v) {
+  get screenSpanning() { return sessionStorage.getItem(`${ns}-spanning`) || "none" }
+  set screenSpanning(v) {
     if (!["none", "single-fold-horizontal", "single-fold-vertical"].includes(v)) {
       throw new TypeError(v);
     }
@@ -94,14 +94,14 @@ export class FoldablesFeature {
   }
 
   getSegments() {
-    if (this.spanning === "none") {
+    if (this.screenSpanning === "none") {
       return [
         { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight },
       ];
     }
 
     // The fold is defined as a segment here because it's used in the css spaning polyfill.
-    if (this.spanning === "single-fold-horizontal") {
+    if (this.screenSpanning === "single-fold-horizontal") {
       const screenCenter = (window.innerHeight - this.browserShellSize) / 2;
       const width = window.innerWidth;
       return [
@@ -111,7 +111,7 @@ export class FoldablesFeature {
       ];
     }
 
-    if (this.spanning === "single-fold-vertical") {
+    if (this.screenSpanning === "single-fold-vertical") {
       const width = window.innerWidth / 2 - this.foldSize / 2;
       const height = window.innerHeight;
       return [
