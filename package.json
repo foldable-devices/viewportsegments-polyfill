@@ -1,6 +1,6 @@
 {
   "name": "windowsegments-polyfill",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Polyfill for JavaScript Window Segments",
   "module": "build/windowsegments-polyfill.js",
   "main": "build/windowsegments-polyfill.js",
@@ -10,7 +10,7 @@
     "example": "examples"
   },
   "exports": {
-    "import": "build/windowsegments-polyfill.js"
+    "import": "./build/windowsegments-polyfill.js"
   },
   "files": [
     "!/demo/",
