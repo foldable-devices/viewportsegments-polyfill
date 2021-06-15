@@ -1,6 +1,6 @@
 {
   "name": "windowsegments-polyfill",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "Polyfill for JavaScript Window Segments",
   "module": "build/windowsegments-polyfill.js",
   "main": "build/windowsegments-polyfill.js",
@@ -31,10 +31,10 @@
   },
   "homepage": "https://github.com/foldable-devices/windowsegments-polyfill#readme",
   "devDependencies": {
-    "concurrently": "^5.3.0",
-    "jsdoc": "^3.6.6",
-    "microbundle": "^0.12.4",
-    "serve": "^11.3.2"
+    "concurrently": "^6.2.0",
+    "jsdoc": "^3.6.7",
+    "microbundle": "^0.13.3",
+    "serve": "^12.0.0"
   },
   "keywords": [
     "foldable",
