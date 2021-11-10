@@ -15,15 +15,23 @@
   <div id="app">
     <div></div>
     <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
   </div>
 
   <script type=module>
     import { FoldablesFeature } from "../../src/index.js";
 
-    const colors = ["blue", "green"];
+    const colors = ["blue", "green", "yellow", "pink", "red"];
 
     function createLayoutSegments() {
-      const segments = getWindowSegments();
+      // New segment configuration, hide all the previous segments.
+      for (let children of app.children) {
+        children.style.display = "none";
+      }
+
+      const segments = window.visualViewport.segments();
 
       for (let [i, segment] of segments.entries()) {
         const element = app.children[i];
@@ -35,10 +43,6 @@
         element.style.width = segment.width  + 'px';
         element.style.height = segment.height  + 'px';
       }
-
-      if (segments.length == 1) {
-        app.children[1].style.display = "none";
-      }
     }
 
     const foldablesFeat = new FoldablesFeature;
@@ -47,8 +51,15 @@
     createLayoutSegments();
 
     document.querySelector('button').addEventListener('click', _ => {
-        const spanningMode = ['single-fold-horizontal', 'single-fold-vertical', 'none'];
-        foldablesFeat.screenSpanning = spanningMode[Math.floor(Math.random() * 3)];
+        let spanVertically = Math.random() < 0.5;
+        let numberOfSegments = Math.round(Math.random() * (5 - 1) + 1);
+        if (spanVertically) {
+          foldablesFeat.verticalViewportSegments = numberOfSegments;
+          foldablesFeat.horizontalViewportSegments = 1;
+        } else {
+          foldablesFeat.horizontalViewportSegments = numberOfSegments;
+          foldablesFeat.verticalViewportSegments = 1;
+        }
       }
     );
   </script>
