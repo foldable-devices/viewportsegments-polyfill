@@ -58,7 +58,8 @@ export function debounce(fn, wait) {
  * @type {object}
  * @property {number} foldSize - The width of the visible fold (hinge) between the two screens, in CSS pixels.
  * @property {number} browserShellSize - The height of the user agent (browser) top chrome, in CSS pixels.
- * @property {string} screenSpanning - The spanning mode: "single-fold-horizontal", "single-fold-vertical" or "none".
+ * @property {number} horizontalViewportSegments - The number of horizontal viewport segments
+ * @property {number} verticalViewportSegments - The number of vertical viewport segments
  * @property {object} segments - Returns an array of screen and fold segments, in order, each segment is an object containing width, height, top and left properties.
  * @property {EventHandler} onchange - An event handler for the "change" event.
  */
@@ -94,12 +95,21 @@ export class FoldablesFeature {
     window.addEventListener("resize", () => debounce(invalidate(), 200));
   }
 
-  get screenSpanning() { return sessionStorage.getItem(`${ns}-spanning`) || "none" }
-  set screenSpanning(v) {
-    if (!["none", "single-fold-horizontal", "single-fold-vertical"].includes(v)) {
+  get horizontalViewportSegments() { return +sessionStorage.getItem(`${ns}-horizontal-viewport-segments`) || 1 }
+  set horizontalViewportSegments(v) {
+    if (isNaN(v)) {
       throw new TypeError(v);
     }
-    sessionStorage.setItem(`${ns}-spanning`, v);
+    sessionStorage.setItem(`${ns}-horizontal-viewport-segments`, v);
+    invalidate();
+  }
+
+  get verticalViewportSegments() { return +sessionStorage.getItem(`${ns}-vertical-viewport-segments`) || 1 }
+  set verticalViewportSegments(v) {
+    if (isNaN(v)) {
+      throw new TypeError(v);
+    }
+    sessionStorage.setItem(`${ns}-vertical-viewport-segments`, v);
     invalidate();
   }
 
@@ -122,32 +132,46 @@ export class FoldablesFeature {
   }
 
   getSegments() {
-    if (this.screenSpanning === "none") {
+    if (this.verticalViewportSegments === 1 &amp;&amp; this.horizontalViewportSegments === 1) {
       return [
         { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight },
       ];
     }
-
+    let segments = [];
     // The fold is defined as a segment here because it's used in the css spaning polyfill.
-    if (this.screenSpanning === "single-fold-horizontal") {
-      const screenCenter = (window.innerHeight - this.browserShellSize) / 2;
+    if (this.horizontalViewportSegments > 1) {
+      let numberOfFolds = this.horizontalViewportSegments - 1;
+      const availableHeight = window.innerHeight - this.browserShellSize;
+      let topOffset = 0;
       const width = window.innerWidth;
-      return [
-        { top: 0, left: 0, width, height: screenCenter - this.foldSize / 2 },
-        { top: screenCenter - this.foldSize / 2, height: this.foldSize, left: 0, width },
-        { top: screenCenter + this.foldSize / 2, left: 0, width, height: screenCenter - this.foldSize / 2 }
-      ];
+      const height = availableHeight / this.horizontalViewportSegments - this.foldSize *
+        numberOfFolds / this.horizontalViewportSegments;
+      for (let i = 0; i &lt; this.horizontalViewportSegments + numberOfFolds; ++i) {
+        if (i % 2 === 0)
+          segments[i] = { top: topOffset, left: 0, width: width, height: height };
+        else
+          segments[i] = { top: topOffset, left: 0, width: width, height: this.foldSize };
+          topOffset += segments[i].height;
+      }
     }
 
-    if (this.screenSpanning === "single-fold-vertical") {
-      const width = window.innerWidth / 2 - this.foldSize / 2;
+    if (this.verticalViewportSegments > 1) {
+      let numberOfFolds = this.verticalViewportSegments - 1;
+      const width = window.innerWidth / this.verticalViewportSegments - this.foldSize *
+        numberOfFolds / this.verticalViewportSegments;
       const height = window.innerHeight;
-      return [
-        { top: 0, left: 0, width, height},
-        { top: 0, height, left: width, width: this.foldSize },
-        { top: 0, left: window.innerWidth / 2 + this.foldSize / 2, width, height }
-      ];
+      let leftOffset = 0;
+
+      for (let i = 0; i &lt; this.verticalViewportSegments + numberOfFolds; ++i) {
+        if (i % 2 === 0)
+          segments[i] = { top: 0, left: leftOffset, width: width, height: height };
+        else
+          segments[i] = { top: 0, left: leftOffset, width: this.foldSize, height: height };
+        leftOffset += segments[i].width;
+      }
     }
+
+    return segments;
   }
 }
 
@@ -155,19 +179,22 @@ window[ns] = new FoldablesFeature;
 
 /**
  * @function
- * @name getWindowSegments
+ * @name window.visualViewport.segments
  * @description Returns an array of screen segments, each segment is an object containing
  * width, height, top and left properties (AKA segment's bounding rects).
  */
-if (window.getWindowSegments === undefined) {
-  window.getWindowSegments = function() {
+if (window.visualViewport.segments === undefined) {
+  window.visualViewport.segments = function() {
     const segments = window[ns].getSegments();
     if (segments.length === 1)
       return segments;
-    else
-      return [segments[0], segments[2]];
+    else {
+      // Only returns the segments, not the folds.
+      return segments.filter((x, i) => i % 2 === 0);
+    }
   };
-}</code></pre>
+}
+</code></pre>
         </article>
     </section>
 
@@ -177,13 +204,13 @@ if (window.getWindowSegments === undefined) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#debounce">debounce</a></li><li><a href="global.html#getWindowSegments">getWindowSegments</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#debounce">debounce</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue Jun 15 2021 10:02:14 GMT-0400 (Eastern Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Nov 10 2021 10:46:44 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
