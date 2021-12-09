@@ -120,9 +120,9 @@ export class FoldablesFeature {
         numberOfFolds / this.verticalViewportSegments;
       for (let i = 0; i < this.verticalViewportSegments + numberOfFolds; ++i) {
         if (i % 2 === 0)
-          segments[i] = { top: topOffset, left: 0, width: width, height: height };
+          segments[i] = { top: topOffset, left: 0, bottom: topOffset + height, right: width, width: width, height: height };
         else
-          segments[i] = { top: topOffset, left: 0, width: width, height: this.foldSize };
+          segments[i] = { top: topOffset, left: 0, right: width, bottom: topOffet + this.foldSize, width: width, height: this.foldSize };
         topOffset += segments[i].height;
       }
     }
@@ -136,9 +136,9 @@ export class FoldablesFeature {
 
       for (let i = 0; i < this.horizontalViewportSegments + numberOfFolds; ++i) {
         if (i % 2 === 0)
-          segments[i] = { top: 0, left: leftOffset, width: width, height: height };
+          segments[i] = { top: 0, left: leftOffset, right: leftOffset + width, bottom: height, width: width, height: height };
         else
-          segments[i] = { top: 0, left: leftOffset, width: this.foldSize, height: height };
+          segments[i] = { top: 0, left: leftOffset, right: leftOffset + this.foldSize, bottom: height, width: this.foldSize, height: height };
         leftOffset += segments[i].width;
       }
     }
