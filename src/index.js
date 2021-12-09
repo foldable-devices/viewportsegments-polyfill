@@ -122,7 +122,7 @@ export class FoldablesFeature {
         if (i % 2 === 0)
           segments[i] = { top: topOffset, left: 0, bottom: topOffset + height, right: width, width: width, height: height };
         else
-          segments[i] = { top: topOffset, left: 0, right: width, bottom: topOffet + this.foldSize, width: width, height: this.foldSize };
+          segments[i] = { top: topOffset, left: 0, right: width, bottom: topOffset + this.foldSize, width: width, height: this.foldSize };
         topOffset += segments[i].height;
       }
     }

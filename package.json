@@ -1,6 +1,6 @@
 {
   "name": "windowsegments-polyfill",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "Polyfill for JavaScript Window Segments",
   "module": "build/windowsegments-polyfill.js",
   "main": "build/windowsegments-polyfill.js",
