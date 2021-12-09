@@ -110,31 +110,31 @@ export class FoldablesFeature {
       ];
     }
     let segments = [];
-    // The fold is defined as a segment here because it's used in the css spaning polyfill.
-    if (this.horizontalViewportSegments > 1) {
-      let numberOfFolds = this.horizontalViewportSegments - 1;
+    // The fold is defined as a segment here because it's used in the css spanning polyfill.
+    if (this.verticalViewportSegments > 1) {
+      let numberOfFolds = this.verticalViewportSegments - 1;
       const availableHeight = window.innerHeight - this.browserShellSize;
       let topOffset = 0;
       const width = window.innerWidth;
-      const height = availableHeight / this.horizontalViewportSegments - this.foldSize *
-        numberOfFolds / this.horizontalViewportSegments;
-      for (let i = 0; i < this.horizontalViewportSegments + numberOfFolds; ++i) {
+      const height = availableHeight / this.verticalViewportSegments - this.foldSize *
+        numberOfFolds / this.verticalViewportSegments;
+      for (let i = 0; i < this.verticalViewportSegments + numberOfFolds; ++i) {
         if (i % 2 === 0)
           segments[i] = { top: topOffset, left: 0, width: width, height: height };
         else
           segments[i] = { top: topOffset, left: 0, width: width, height: this.foldSize };
-          topOffset += segments[i].height;
+        topOffset += segments[i].height;
       }
     }
 
-    if (this.verticalViewportSegments > 1) {
-      let numberOfFolds = this.verticalViewportSegments - 1;
-      const width = window.innerWidth / this.verticalViewportSegments - this.foldSize *
-        numberOfFolds / this.verticalViewportSegments;
+    if (this.horizontalViewportSegments > 1) {
+      let numberOfFolds = this.horizontalViewportSegments - 1;
+      const width = window.innerWidth / this.horizontalViewportSegments - this.foldSize *
+        numberOfFolds / this.horizontalViewportSegments;
       const height = window.innerHeight;
       let leftOffset = 0;
 
-      for (let i = 0; i < this.verticalViewportSegments + numberOfFolds; ++i) {
+      for (let i = 0; i < this.horizontalViewportSegments + numberOfFolds; ++i) {
         if (i % 2 === 0)
           segments[i] = { top: 0, left: leftOffset, width: width, height: height };
         else
