@@ -34,6 +34,7 @@ export function debounce(fn, wait) {
  * @property {number} verticalViewportSegments - The number of vertical viewport segments
  * @property {object} segments - Returns an array of screen and fold segments, in order, each segment is an object containing width, height, top and left properties.
  * @property {EventHandler} onchange - An event handler for the "change" event.
+ * @property {Function} randomizeSegmentsConfiguration - Randomly change the viewport segments configuration
  */
 export class FoldablesFeature {
   constructor() {
@@ -144,6 +145,23 @@ export class FoldablesFeature {
     }
 
     return segments;
+  }
+
+  /**
+   * Randomly change the viewport segments configuration, which can be updated
+   * vertically or horizontally.
+   * @param {number} maximumSegments - The maximum number of segments for the configuration.
+   */
+  randomizeSegmentsConfiguration(maximumSegments) {
+    let spanVertically = Math.random() < 0.5;
+    let numberOfSegments = Math.round(Math.random() * (maximumSegments - 1) + 1);
+    if (spanVertically) {
+      this.verticalViewportSegments = numberOfSegments;
+      this.horizontalViewportSegments = 1;
+    } else {
+      this.horizontalViewportSegments = numberOfSegments;
+      this.verticalViewportSegments = 1;
+    }
   }
 }
 

@@ -1,9 +1,9 @@
 {
-  "name": "windowsegments-polyfill",
-  "version": "3.0.4",
-  "description": "Polyfill for JavaScript Window Segments",
-  "module": "build/windowsegments-polyfill.js",
-  "main": "build/windowsegments-polyfill.js",
+  "name": "viewportsegments-polyfill",
+  "version": "1.0.0",
+  "description": "Polyfill for JavaScript Visual Viewport Segments",
+  "module": "build/viewportsegments-polyfill.js",
+  "main": "build/viewportsegments-polyfill.js",
   "type": "module",
   "types": "",
   "directories": {
@@ -22,14 +22,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/foldable-devices/windowsegments-polyfill.git"
+    "url": "git+https://github.com/foldable-devices/viewportsegments-polyfill.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/foldable-devices/windowsegments-polyfill/issues"
+    "url": "https://github.com/foldable-devices/viewportsegments-polyfill/issues"
   },
-  "homepage": "https://github.com/foldable-devices/windowsegments-polyfill#readme",
+  "homepage": "https://github.com/foldable-devices/viewportsegments-polyfill#readme",
   "devDependencies": {
     "concurrently": "^6.3.0",
     "jsdoc": "^3.6.7",
