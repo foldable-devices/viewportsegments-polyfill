@@ -14,7 +14,8 @@
       position: absolute;
       top: 0;
       left: 0;
-      z-index: 999
+      z-index: 999;
+      display: none;
     }
   </style>
 </head>
@@ -58,15 +59,25 @@
       }
     }
 
-    const foldablesFeat = new FoldablesFeature;
-    foldablesFeat.onchange = createLayoutSegments;
-    foldablesFeat.foldSize = '24';
+    const hasBrowserSupport =
+      window.matchMedia('(vertical-viewport-segments)').matches ||
+      window.matchMedia('(horizontal-viewport-segments)').matches || false;
+
+    if (!hasBrowserSupport) {
+      const foldablesFeat = new FoldablesFeature;
+      foldablesFeat.onchange = createLayoutSegments;
+      foldablesFeat.foldSize = '24';
+      const button = document.querySelector('button');
+      button.addEventListener('click', _ => {
+          foldablesFeat.randomizeSegmentsConfiguration(5);
+        }
+      );
+      button.style.display = "inline";
+    }
+
     createLayoutSegments();
 
-    document.querySelector('button').addEventListener('click', _ => {
-        foldablesFeat.randomizeSegmentsConfiguration(5);
-      }
-    );
+    window.onresize = _ => createLayoutSegments();
   </script>
 </body>
 </html>

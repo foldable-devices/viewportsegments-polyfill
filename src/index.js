@@ -2,11 +2,11 @@ const ns = "__foldables__";
 
 let needsDispatch = false;
 async function invalidate() {
+  window[ns].updateSegments();
   if (!needsDispatch) {
     needsDispatch = true;
     needsDispatch = await Promise.resolve(false);
     window[ns].dispatchEvent(new Event('change'));
-    window[ns].updateSegments();
   }
 }
 
