@@ -1,6 +1,6 @@
 {
   "name": "viewportsegments-polyfill",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Polyfill for JavaScript Visual Viewport Segments",
   "module": "build/viewportsegments-polyfill.js",
   "main": "build/viewportsegments-polyfill.js",

@@ -6,6 +6,7 @@ async function invalidate() {
     needsDispatch = true;
     needsDispatch = await Promise.resolve(false);
     window[ns].dispatchEvent(new Event('change'));
+    window[ns].updateSegments();
   }
 }
 
@@ -104,12 +105,11 @@ export class FoldablesFeature {
     invalidate();
   }
 
-  getSegments() {
+  updateSegments() {
     if (this.verticalViewportSegments === 1 && this.horizontalViewportSegments === 1) {
-      return [
-        { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight },
-      ];
+      window.visualViewport.segments = null;
     }
+
     let segments = [];
     // The fold is defined as a segment here because it's used in the css spanning polyfill.
     if (this.verticalViewportSegments > 1) {
@@ -119,12 +119,10 @@ export class FoldablesFeature {
       const width = window.innerWidth;
       const height = availableHeight / this.verticalViewportSegments - this.foldSize *
         numberOfFolds / this.verticalViewportSegments;
-      for (let i = 0; i < this.verticalViewportSegments + numberOfFolds; ++i) {
-        if (i % 2 === 0)
-          segments[i] = { top: topOffset, left: 0, bottom: topOffset + height, right: width, width: width, height: height };
-        else
-          segments[i] = { top: topOffset, left: 0, right: width, bottom: topOffset + this.foldSize, width: width, height: this.foldSize };
+      for (let i = 0; i < this.verticalViewportSegments; ++i) {
+        segments[i] = { top: topOffset, left: 0, bottom: topOffset + height, right: width, width: width, height: height };
         topOffset += segments[i].height;
+        topOffset += this.foldSize;
       }
     }
 
@@ -134,17 +132,13 @@ export class FoldablesFeature {
         numberOfFolds / this.horizontalViewportSegments;
       const height = window.innerHeight;
       let leftOffset = 0;
-
-      for (let i = 0; i < this.horizontalViewportSegments + numberOfFolds; ++i) {
-        if (i % 2 === 0)
-          segments[i] = { top: 0, left: leftOffset, right: leftOffset + width, bottom: height, width: width, height: height };
-        else
-          segments[i] = { top: 0, left: leftOffset, right: leftOffset + this.foldSize, bottom: height, width: this.foldSize, height: height };
+      for (let i = 0; i < this.horizontalViewportSegments; ++i) {
+        segments[i] = { top: 0, left: leftOffset, right: leftOffset + width, bottom: height, width: width, height: height };
         leftOffset += segments[i].width;
+        leftOffset +=  this.foldSize;
       }
     }
-
-    return segments;
+    window.visualViewport.segments = segments;
   }
 
   /**
@@ -174,13 +168,5 @@ window[ns] = new FoldablesFeature;
  * width, height, top and left properties (AKA segment's bounding rects).
  */
 if (window.visualViewport.segments === undefined) {
-  window.visualViewport.segments = function() {
-    const segments = window[ns].getSegments();
-    if (segments.length === 1)
-      return segments;
-    else {
-      // Only returns the segments, not the folds.
-      return segments.filter((x, i) => i % 2 === 0);
-    }
-  };
+  window[ns].updateSegments();
 }

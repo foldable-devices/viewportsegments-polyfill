@@ -39,7 +39,10 @@
         children.style.display = "none";
       }
 
-      const segments = window.visualViewport.segments();
+      const segments = window.visualViewport.segments;
+      if (!segments) {
+        return;
+      }
 
       for (let [i, segment] of segments.entries()) {
         const element = app.children[i];
