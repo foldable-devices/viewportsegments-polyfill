@@ -1,6 +1,6 @@
 {
   "name": "viewportsegments-polyfill",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Polyfill for JavaScript Visual Viewport Segments",
   "module": "build/viewportsegments-polyfill.js",
   "main": "build/viewportsegments-polyfill.js",
@@ -31,10 +31,10 @@
   },
   "homepage": "https://github.com/foldable-devices/viewportsegments-polyfill#readme",
   "devDependencies": {
-    "concurrently": "^6.3.0",
-    "jsdoc": "^3.6.7",
-    "microbundle": "^0.14.1",
-    "serve": "^13.0.2"
+    "concurrently": "^7.6.0",
+    "jsdoc": "^4.0.0",
+    "microbundle": "^0.15.1",
+    "serve": "^14.2.0"
   },
   "keywords": [
     "foldable",
