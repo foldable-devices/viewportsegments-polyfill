@@ -39,6 +39,9 @@ export function debounce(fn, wait) {
  */
 export class FoldablesFeature {
   constructor() {
+    if (window.visualViewport != undefined)
+      return;
+
     if (window[ns] !== undefined) {
       return window[ns];
     }
@@ -167,6 +170,6 @@ window[ns] = new FoldablesFeature;
  * @description Returns an array of screen segments, each segment is an object containing
  * width, height, top and left properties (AKA segment's bounding rects).
  */
-if (window.visualViewport.segments === undefined) {
+if (window.visualViewport === undefined && window.visualViewport.segments === undefined) {
   window[ns].updateSegments();
 }
