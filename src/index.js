@@ -39,7 +39,7 @@ export function debounce(fn, wait) {
  */
 export class FoldablesFeature {
   constructor() {
-    if (window.visualViewport != undefined)
+    if (window.visualViewport === undefined || window.visualViewport.segments !== undefined)
       return;
 
     if (window[ns] !== undefined) {
@@ -69,7 +69,7 @@ export class FoldablesFeature {
       }
     });
 
-    window.addEventListener("resize", () => debounce(invalidate(), 200));
+    window.addEventListener("resize", debounce(invalidate, 200));
   }
 
   get horizontalViewportSegments() { return +sessionStorage.getItem(`${ns}-horizontal-viewport-segments`) || 1 }
@@ -170,6 +170,6 @@ window[ns] = new FoldablesFeature;
  * @description Returns an array of screen segments, each segment is an object containing
  * width, height, top and left properties (AKA segment's bounding rects).
  */
-if (window.visualViewport === undefined && window.visualViewport.segments === undefined) {
+if (window[ns] && window.visualViewport && window.visualViewport.segments === undefined) {
   window[ns].updateSegments();
 }

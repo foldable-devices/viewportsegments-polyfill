@@ -18,7 +18,8 @@
   "scripts": {
     "build": "microbundle -f es -o build/",
     "dev": "concurrently serve \"microbundle watch -f es\"",
-    "generate-docs": "jsdoc -d docs/ src/index.js README.md"
+    "generate-docs": "jsdoc -d docs/ src/index.js README.md",
+    "test": "node --test tests/*.test.js"
   },
   "repository": {
     "type": "git",
